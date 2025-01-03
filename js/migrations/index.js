@@ -7,7 +7,6 @@ import { migrations } from './config.js'
 const VER_STAMP_NAME = '__version__'
 
 /**
- * @typedef {import('sequelize').Sequelize} Sequelize
  * @typedef {import('sequelize').QueryInterface} QueryInterface
  */
 
@@ -24,7 +23,7 @@ export async function getOrCreateVerStamp(queryInterface, options) {
 	const hasVer = await queryInterface.tableExists(VER_STAMP_NAME)
 	if (hasVer) {
 		const [versionRows] =
-			/** @type {{ ver: string }[]} */
+			/** @type {{ ver: string }[][]} */
 			(await queryInterface.sequelize.query(`SELECT ver FROM ${VER_STAMP_NAME};`))
 
 		return versionRows[0].ver
