@@ -1,11 +1,11 @@
 import { Sequelize } from 'sequelize'
 
-import { migrator, getOrCreateVerStamp } from '../migrations/index.js'
+import { migrator } from '../migrations/index.js'
 
 import createCertModel from './Cert.js'
 import createUserModel from './User.js'
 
-function createModels(sequelize: Sequelize) {
+export function createModels(sequelize: Sequelize) {
 	const certModel = createCertModel(sequelize)
 	const userModel = createUserModel(sequelize)
 
@@ -35,19 +35,11 @@ export async function initSqlite(filePath: string) {
 	const models = createModels(sequelize)
 
 	// 檢查是否為新建的 db
-	const queryInterface = sequelize.getQueryInterface()
-	const tables = await queryInterface.showAllTables()
-	const isNewDb = tables.length === 0
-	if (isNewDb) {
-		console.log('[SQLite] create new tables')
-		await sequelize.sync()
-		await getOrCreateVerStamp(queryInterface)
-	} else {
-		await migrator(queryInterface)
-	}
+	const { syncTables } = await migrator(sequelize)
 
 	return {
 		sequelize,
+		syncTables,
 		...models,
 	}
 }
