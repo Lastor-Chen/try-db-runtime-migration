@@ -4,4 +4,12 @@ import { initSqlite } from './models/index.js'
 
 const db = await initSqlite(path.join(process.cwd(), './database.db'))
 
-console.log('finish')
+const users = await db.User.findAll({
+  raw: true,
+  nest: true,
+  include: [
+    { model: db.Cert, as: 'smime' },
+  ],
+})
+
+console.log(users)
