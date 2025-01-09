@@ -35,11 +35,11 @@ export async function initSqlite(filePath: string) {
 	const models = createModels(sequelize)
 
 	// 檢查是否為新建的 db
-	const { syncTables } = await migrator(sequelize)
+	const { umzug } = await migrator(sequelize)
 
 	return {
 		sequelize,
-		syncTables,
+		umzug,
 		...models,
 	}
 }

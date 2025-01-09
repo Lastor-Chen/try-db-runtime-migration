@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize'
 import { Umzug, SequelizeStorage } from 'umzug'
 
 import { createModels } from './models/index.js'
-import { loadMigrations } from './migrations/index.js'
+import { loadMigrations, syncTables } from './migrations/index.js'
 
 // init sequelize
 const sequelize = new Sequelize({
@@ -30,12 +30,7 @@ const tables = await queryInterface.showAllTables()
 const isNewDb = tables.length === 0
 if (isNewDb) {
   console.log('[CLI] New db detected, sync tables schema\n')
-  await sequelize.sync()
-
-  const pendingMigrations = await umzug.pending()
-  await Promise.all(
-    pendingMigrations.map(({ name }) => storage.logMigration({ name }))
-  )
+  await syncTables({ sequelize, umzug })
 }
 
 // start cli

@@ -29,6 +29,24 @@ export function loadMigrations(dir: string) {
     })
 }
 
+/** Sync tables by sequelize models and insert migration stamps to newest */
+export async function syncTables(options: {
+  sequelize: Sequelize,
+  umzug: Umzug<QueryInterface>,
+}) {
+  const { sequelize, umzug } = options
+  const storage = umzug.options.storage as SequelizeStorage
+
+  // create table if not exists
+  await sequelize.sync()
+
+  // insert migration stamps
+  const pendingMigrations = await umzug.pending()
+  await Promise.all(
+    pendingMigrations.map(({ name }) => storage!.logMigration({ name }))
+  )
+}
+
 export const migrator = async (sequelize: Sequelize) => {
   const sortedMigrations = loadMigrations(import.meta.dirname)
 
@@ -43,25 +61,13 @@ export const migrator = async (sequelize: Sequelize) => {
     logger: console,
   })
 
-  /** Sync tables by sequelize models and insert migration stamps to newest */
-  async function syncTables() {
-    // create table if not exists
-    await sequelize.sync()
-
-    // insert migration stamps
-    const pendingMigrations = await umzug.pending()
-    for (const { name } of pendingMigrations) {
-      await storage.logMigration({ name })
-    }
-  }
-
   // 檢查是否為新建的 db
   const tables = await queryInterface.showAllTables()
   const isNewDb = tables.length === 0
 
   if (isNewDb) {
     console.log('[SQLite] create new tables')
-    await syncTables()
+    await syncTables({ sequelize, umzug })
   } else {
     console.log('[SQLite] check migrations')
 
@@ -76,5 +82,5 @@ export const migrator = async (sequelize: Sequelize) => {
     }
   }
 
-  return { syncTables }
+  return { umzug }
 }
