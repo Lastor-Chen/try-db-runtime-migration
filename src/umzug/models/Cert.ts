@@ -1,9 +1,10 @@
 import { DataTypes } from 'sequelize'
 
-import type { Sequelize, ModelStatic, Model } from 'sequelize'
+import type { Sequelize } from 'sequelize'
+import type { AssociateFn } from './types.js'
 
-export default (sequelize: Sequelize) => {
-  const Cert = sequelize.define('Cert', {
+export const defineModel = (sequelize: Sequelize) => {
+  return sequelize.define('Cert', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -24,23 +25,21 @@ export default (sequelize: Sequelize) => {
     tableName: 'cert',
     timestamps: false,
   })
+}
 
-  const associate = (model: Record<string, ModelStatic<Model>>) => {
-		Cert.hasMany(model.User, {
-      foreignKey: {
-        name: 'tls_id',
-        allowNull: true,
-      },
-      as: 'tlsUsers',
-    })
-    Cert.hasOne(model.User, {
-      foreignKey: {
-        name: 'smime_id',
-        allowNull: true,
-      },
-      as: 'smimeUser',
-    })
-	}
-
-  return { model: Cert, associate }
+export const associate: AssociateFn = (model) => {
+  model.Cert.hasMany(model.User, {
+    foreignKey: {
+      name: 'tls_id',
+      allowNull: true,
+    },
+    as: 'tlsUsers',
+  })
+  model.Cert.hasOne(model.User, {
+    foreignKey: {
+      name: 'smime_id',
+      allowNull: true,
+    },
+    as: 'smimeUser',
+  })
 }

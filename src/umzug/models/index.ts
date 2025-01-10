@@ -1,23 +1,39 @@
+import path from 'node:path'
+import Module from 'node:module'
+
 import { Sequelize } from 'sequelize'
+import fastGlob from 'fast-glob'
 
 import { migrator } from '../migrations/index.js'
 
-import createCertModel from './Cert.js'
-import createUserModel from './User.js'
+import type { ModelList, AssociateFn, ModelModule } from './types.js'
 
+const require = Module.createRequire(import.meta.url)
+
+// TODO 研究一下官方 Typescript 文件
 export function createModels(sequelize: Sequelize) {
-	const certModel = createCertModel(sequelize)
-	const userModel = createUserModel(sequelize)
+	const modelList = {} as ModelList
+	const associates: AssociateFn[] = []
 
-	const db = {
-		Cert: certModel.model,
-		User: userModel.model,
-	}
+	const thisFile = path.basename(import.meta.filename)
+	fastGlob
+		.sync(['*.{ts,js}'], {
+			cwd: import.meta.dirname,
+			absolute: true,
+			ignore: [thisFile, '**/types.ts'],
+		})
+		.forEach((file) => {
+			const { defineModel, associate } = require(file) as ModelModule
 
-	certModel?.associate(db)
-	userModel?.associate(db)
+			const model = defineModel(sequelize)
+			modelList[model.name as keyof ModelList] = model
 
-	return db
+			associates.push(associate)
+		})
+
+	associates.forEach((fn) => fn(modelList))
+
+	return modelList
 }
 
 export async function initSqlite(filePath: string) {

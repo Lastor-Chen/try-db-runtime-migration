@@ -11,6 +11,9 @@ importers:
       dedent:
         specifier: ^1.5.3
         version: 1.5.3
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       semver:
         specifier: ^7.6.3
         version: 7.6.3
