@@ -1,4 +1,3 @@
-// @ts-check
 import { DataTypes } from 'sequelize'
 import type { QueryInterface, } from 'sequelize'
 

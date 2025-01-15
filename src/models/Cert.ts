@@ -1,9 +1,20 @@
 import { DataTypes } from 'sequelize'
 
-import type { Sequelize, ModelStatic, Model } from 'sequelize'
+import type { Sequelize, Optional, ModelDefined } from 'sequelize'
+import type { AssociateFn } from '@/models/types.js'
 
-export default (sequelize: Sequelize) => {
-  const Cert = sequelize.define('Cert', {
+interface CertAttrs {
+  id: number
+  type: 'tls' | 'smime'
+  name: string
+}
+
+type CertCreationAttrs = Optional<CertAttrs, 'id'>
+
+export type CertModel = ModelDefined<CertAttrs, CertCreationAttrs>
+
+export const defineModel = (sequelize: Sequelize): CertModel => {
+   return sequelize.define('Cert', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -24,23 +35,21 @@ export default (sequelize: Sequelize) => {
     tableName: 'cert',
     timestamps: false,
   })
+}
 
-  const associate = (model: Record<string, ModelStatic<Model>>) => {
-		Cert.hasMany(model.User, {
-      foreignKey: {
-        name: 'tls_id',
-        allowNull: true,
-      },
-      as: 'tlsUsers',
-    })
-    Cert.hasOne(model.User, {
-      foreignKey: {
-        name: 'smime_id',
-        allowNull: true,
-      },
-      as: 'smimeUser',
-    })
-	}
-
-  return { model: Cert, associate }
+export const associate: AssociateFn = (model) => {
+  model.Cert.hasMany(model.User, {
+    foreignKey: {
+      name: 'tls_id',
+      allowNull: true,
+    },
+    as: 'tlsUsers',
+  })
+  model.Cert.hasOne(model.User, {
+    foreignKey: {
+      name: 'smime_id',
+      allowNull: true,
+    },
+    as: 'smimeUser',
+  })
 }
