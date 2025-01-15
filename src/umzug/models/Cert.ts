@@ -1,10 +1,20 @@
 import { DataTypes } from 'sequelize'
 
-import type { Sequelize } from 'sequelize'
+import type { Sequelize, Optional, ModelDefined } from 'sequelize'
 import type { AssociateFn } from './types.js'
 
-export const defineModel = (sequelize: Sequelize) => {
-  return sequelize.define('Cert', {
+interface CertAttrs {
+  id: number
+  type: 'tls' | 'smime'
+  name: string
+}
+
+type CertCreationAttrs = Optional<CertAttrs, 'id'>
+
+export type CertModel = ModelDefined<CertAttrs, CertCreationAttrs>
+
+export const defineModel = (sequelize: Sequelize): CertModel => {
+   return sequelize.define('Cert', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,

@@ -1,11 +1,13 @@
-import type { Sequelize, ModelStatic, Model } from 'sequelize'
+import type { Sequelize, ModelStatic, Model, ModelDefined } from 'sequelize'
+import type { UserModel } from './User.js'
+import type { CertModel } from './Cert.js'
 
 export type ModelList = {
-  User: ModelStatic<Model>,
-  Cert: ModelStatic<Model>,
+  User: UserModel,
+  Cert: CertModel,
 }
 
-export type AssociateFn = (model: Record<keyof ModelList, ModelStatic<Model>>) => void
+export type AssociateFn = (model: ModelList) => void
 
 export type ModelModule = {
   defineModel(sequelize: Sequelize): ModelStatic<Model>,

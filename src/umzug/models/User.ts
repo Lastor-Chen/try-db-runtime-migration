@@ -1,9 +1,18 @@
 import { DataTypes } from 'sequelize'
 
-import type { Sequelize } from 'sequelize'
+import type { Sequelize, Optional, ModelDefined } from 'sequelize'
 import type { AssociateFn } from './types.js'
 
-export const defineModel = (sequelize: Sequelize) => {
+interface UserAttrs {
+  id: number
+  name: string
+}
+
+type UserCreationAttrs = Optional<UserAttrs, 'id'>
+
+export type UserModel = ModelDefined<UserAttrs, UserCreationAttrs>
+
+export const defineModel = (sequelize: Sequelize): UserModel => {
   return sequelize.define('User', {
     id: {
       type: DataTypes.INTEGER,
@@ -21,6 +30,12 @@ export const defineModel = (sequelize: Sequelize) => {
 }
 
 export const associate: AssociateFn = (model) => {
-  model.User.belongsTo(model.Cert, { foreignKey: 'tls_id', as: 'tls' })
-  model.User.belongsTo(model.Cert, { foreignKey: 'smime_id', as: 'smime' })
+  model.User.belongsTo(model.Cert, {
+    foreignKey: 'tls_id',
+    as: 'tls',
+  })
+  model.User.belongsTo(model.Cert, {
+    foreignKey: 'smime_id',
+    as: 'smime',
+  })
 }

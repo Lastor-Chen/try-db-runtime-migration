@@ -10,12 +10,12 @@ import type { ModelList, AssociateFn, ModelModule } from './types.js'
 
 const require = Module.createRequire(import.meta.url)
 
-// TODO 研究一下官方 Typescript 文件
 export function createModels(sequelize: Sequelize) {
 	const modelList = {} as ModelList
 	const associates: AssociateFn[] = []
 
 	const thisFile = path.basename(import.meta.filename)
+
 	fastGlob
 		.sync(['*.{ts,js}'], {
 			cwd: import.meta.dirname,
