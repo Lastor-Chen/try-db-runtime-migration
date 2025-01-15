@@ -1,24 +1,7 @@
 import { Sequelize } from 'sequelize'
 
-import { migrator, getOrCreateVerStamp } from '../migrations/index.js'
-
-import createCertModel from './Cert.js'
-import createUserModel from './User.js'
-
-export function createModels(sequelize: Sequelize) {
-	const certModel = createCertModel(sequelize)
-	const userModel = createUserModel(sequelize)
-
-	const db = {
-		Cert: certModel.model,
-		User: userModel.model,
-	}
-
-	certModel?.associate(db)
-	userModel?.associate(db)
-
-	return db
-}
+import { migrator, getOrCreateVerStamp } from './migrations/index.js'
+import { createModels } from '@/models/index.js'
 
 export async function initSqlite(filePath: string) {
 	const sequelize = new Sequelize({

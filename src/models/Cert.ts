@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 
 import type { Sequelize, Optional, ModelDefined } from 'sequelize'
-import type { AssociateFn } from './types.js'
+import type { AssociateFn } from '@/models/types.js'
 
 interface CertAttrs {
   id: number

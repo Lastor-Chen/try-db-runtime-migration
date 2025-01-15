@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node js/index.js",
-    "dev": "tsx src/manual/index.ts",
-    "dev2": "tsx src/umzug/index.ts",
+    "dev": "tsx src/umzug/index.ts",
     "cli": "tsx src/umzug/cli.ts",
+    "dev:m": "tsx src/manual/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

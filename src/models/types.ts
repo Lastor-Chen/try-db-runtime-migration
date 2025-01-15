@@ -1,6 +1,6 @@
-import type { Sequelize, ModelStatic, Model, ModelDefined } from 'sequelize'
-import type { UserModel } from './User.js'
-import type { CertModel } from './Cert.js'
+import type { Sequelize, ModelStatic, Model } from 'sequelize'
+import type { UserModel } from '@/models/User.js'
+import type { CertModel } from '@/models/Cert.js'
 
 export type ModelList = {
   User: UserModel,

@@ -2,8 +2,8 @@ import path from 'node:path'
 import { Sequelize } from 'sequelize'
 import { Umzug, SequelizeStorage } from 'umzug'
 
-import { createModels } from './models/index.js'
-import { loadMigrations, syncTables } from './migrations/index.js'
+import { createModels } from '@/models/index.js'
+import { loadMigrations, syncTables } from '@/umzug/migrations/index.js'
 
 // init sequelize
 const sequelize = new Sequelize({
